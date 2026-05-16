@@ -1,1 +1,51 @@
+{% extends 'onlinecourse/base.html' %}
 
+{% block content %}
+
+<div class="container mt-5">
+
+    <div class="card shadow-lg">
+
+        <div class="card-body">
+
+            <h1 class="card-title text-primary">
+                {{ course.name }}
+            </h1>
+
+            <p class="card-text">
+                {{ course.description }}
+            </p>
+
+            <hr>
+
+            <h3 class="mb-4">
+                Course Lessons
+            </h3>
+
+            <ul class="list-group">
+
+                {% for lesson in course.lesson_set.all %}
+
+                <li class="list-group-item">
+
+                    <h5>
+                        {{ lesson.title }}
+                    </h5>
+
+                    <p>
+                        {{ lesson.content }}
+                    </p>
+
+                </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
