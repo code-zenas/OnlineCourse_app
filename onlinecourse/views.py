@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect
 from django.urls import reverse
 
 from .models import Course
@@ -45,24 +45,32 @@ def show_exam_result(request, course_id, submission_id):
 
     course = get_object_or_404(Course, pk=course_id)
 
-    submission = Submission.objects.get(
-        pk=submission_id
-    )
+    submission = Submission.objects.get(pk=submission_id)
 
-    selected_choices = submission.choices.all()
+    choices = submission.choices.all()
 
-    total_score = 0
+    selected_ids = []
 
-    for choice in selected_choices:
+    for choice in choices:
+        selected_ids.append(choice.id)
 
-        if choice.is_correct:
-            total_score += 1
+    grade = 0
+    possible_score = 0
+
+    questions = course.question_set.all()
+
+    for question in questions:
+
+        possible_score += question.grade
+
+        if question.is_get_score(selected_ids):
+            grade += question.grade
 
     context = {
         'course': course,
-        'submission': submission,
-        'score': total_score,
-        'choices': selected_choices,
+        'selected_ids': selected_ids,
+        'grade': grade,
+        'possible': possible_score,
     }
 
     return render(
